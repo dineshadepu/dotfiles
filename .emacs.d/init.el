@@ -44,8 +44,8 @@
 (size-indication-mode)
 (fset 'yes-or-no-p #'y-or-n-p)
 (setq x-gtk-use-system-tooltips nil)
-(global-whitespace-mode)
 (setq-default indent-tabs-mode nil)
+(global-whitespace-mode -1)
 (global-set-key (kbd "M-x") 'helm-M-x)
 
 ;; backup files nil
@@ -120,11 +120,13 @@
 ;; Aliases
 (defalias 'yes-or-no-p 'y-or-n-p)
 
+;; (use-package whitespace-mode
+;;   :disabled t)
 
 (use-package which-key
-             :ensure t
-             :diminish which-key-mode
-             :config (which-key-mode))
+  :ensure t
+  :diminish which-key-mode
+  :config (which-key-mode))
 
 
 (use-package evil
@@ -141,6 +143,10 @@
          ([up]       . windmove-up)
          ([down]     . windmove-down)
          ("SPC" . nil)
+         :map
+         evil-normal-state-map
+	 (";" . evil-ex)
+	 (":"	.	evil-repeat-find-char)
          :map    evil-motion-state-map
          ([left]     . windmove-left)
          ([right]    . windmove-right)
