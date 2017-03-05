@@ -86,6 +86,8 @@ source $ZSH/oh-my-zsh.sh
 alias r="rm -rf"
 alias sl="ls"
 alias s="ls"
+alias vcd="vcsh dotfiles"
+
 #alias sph="source ~/.virtualenvs/pysph_env/bin/activate"
 # alias p='python3'
 # alias python='python3'
@@ -105,6 +107,7 @@ export PATH=~/.cargo/bin:$PATH
 PATH=$HOME/.cabal/bin:$PATH
 export PATH="$HOME/Library/Haskell/bin:$PATH"
 export PATH="/Applications:$PATH"
+export PATH="/usr/local/bin:$PATH"
 
 
 #To escape "no match found" ssh
