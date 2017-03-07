@@ -8,9 +8,16 @@
 (require 'package)
 (setq package-enable-at-startup nil)
 
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
-(add-to-list 'package-archives
-             '("melpa-stable" . "https://stable.melpa.org/packages/"))
+(cond
+ ((>= 24 emacs-major-version)
+  (require 'package)
+  (package-initialize)
+  (add-to-list 'package-archives
+               '("melpa-stable" . "http://stable.melpa.org/packages/") t)
+  (package-refresh-contents)
+  )
+ )
+
 (setq package-archives
       '(("elpa" . "http://elpa.gnu.org/packages/")
         ("melpa-stable" . "http://stable.melpa.org/packages/")
@@ -66,6 +73,8 @@
 ;; Electric auto pair
 (electric-pair-mode t)
 
+(setq temporary-file-directory "~/.emacs.d/tmp/")
+
 ;; White space astropy
 ;; Remove trailing whitespace manually by typing C-t C-w.
 (add-hook 'python-mode-hook
@@ -96,8 +105,8 @@
              (load-theme 'monokai t))
 
 (use-package exec-path-from-shell
-
-  :load-path "~/.emacs.d/elisp/exec-path-from-shell/"
+  :ensure t
+  ;; :load-path "~/.emacs.d/elisp/exec-path-from-shell/"
   :config
   (push "HISTFILE" exec-path-from-shell-variables)
   (setq exec-path-from-shell-check-startup-files nil)
@@ -215,7 +224,8 @@
             (evil-leader/set-key "r" 'restart-emacs)
             (evil-leader/set-key "c" 'save-buffers-kill-terminal)
             (evil-leader/set-key "w" 'ispell-word)
-            (evil-leader/set-key "h" 'helm-M-x)
+            (evil-leader/set-key "g" 'magit-status)
+            ;; (evil-leader/set-key "h" 'helm-M-x)
             (evil-leader/set-key "k" 'kill-this-buffer)))
 
 ;; evil cursor terminal
@@ -250,6 +260,13 @@
 (define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
 (define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
 
+
+(use-package magit
+  :ensure t)
+
+
+(use-package evil-magit
+  :ensure t)
 
 (use-package evil-nerd-commenter
   :ensure t
@@ -696,34 +713,36 @@
 ;;   :load-path "~/.emacs.d/elisp/flycheck-package/"
 ;;   :init (with-eval-after-load 'flycheck (flycheck-package-setup)))
 
-;; (use-package racer
-;;   :load-path "~/.emacs.d/elisp/emacs-racer/"
-;;   :bind
-;;   (:map evil-normal-state-map
-;;      ("M-," .  racer-find-definition))
-;;   :config
-;;   (add-hook 'rust-mode-hook #'racer-mode)
-;;   (add-hook 'racer-mode-hook #'eldoc-mode))
+(use-package racer
+  :ensure t
+  ;; :load-path "~/.emacs.d/elisp/emacs-racer/"
+  :bind
+  (:map evil-normal-state-map
+        ("M-," .  racer-find-definition))
+  :config
+  (add-hook 'rust-mode-hook #'racer-mode)
+  (add-hook 'racer-mode-hook #'eldoc-mode))
 
-;; (use-package emacs-rustfmt
-;;   :load-path "~/.emacs.d/elisp/emacs-rustfmt/"
-;;   :config
-;;   (add-hook 'rust-mode-hook #'rustfmt-enable-on-save))
+(use-package emacs-rustfmt
+  ;; :ensure t
+  :load-path "~/.emacs.d/elisp/emacs-rustfmt/"
+  :config
+  (add-hook 'rust-mode-hook #'rustfmt-enable-on-save))
 
-;; (defun my-rust-mode-hooks ()
-;;   (add-hook 'before-save-hook 'rustfmt-format-buffer)
-;;   )
-;; (add-hook 'rust-mode-hook 'my-rust-mode-hooks)
+(defun my-rust-mode-hooks ()
+  (add-hook 'before-save-hook 'rustfmt-format-buffer)
+  )
+(add-hook 'rust-mode-hook 'my-rust-mode-hooks)
 
-;; (use-package rustfmt
-;;   :config
-;;   (define-key rust-mode-map (kbd "C-c C-f") #'rustfmt-format-buffer))
+(use-package rustfmt
+  :config
+  (define-key rust-mode-map (kbd "C-c C-f") #'rustfmt-format-buffer))
 
-;; (use-package toml-mode
-;;   :ensure t)
+(use-package toml-mode
+  :ensure t)
 
-;; (use-package clang-format
-;; :ensure t)
+(use-package clang-format
+  :ensure t)
 
 ;; (use-package flycheck-haskell
 ;;   :commands flycheck-haskell-setup)
@@ -803,7 +822,7 @@
  '(haskell-tags-on-save t)
  '(package-selected-packages
    (quote
-    (rainbow-delimiters scheme-complete paredit racket-mode company-quickhelp ggtags predictive-mode predictive markdown-mode meghanada meghananda-emacs meghananda jde-mode company-emacs-eclim eclim emacs-eclim rustfmt flycheck-package toml-mode clang-format racer exec-path-from-shell which-key use-package smex rich-minority restart-emacs py-yapf monokai-theme helm golden-ratio flycheck flx-ido evil-terminal-cursor-changer evil-surround evil-nerd-commenter evil-leader evil-exchange elpy company-statistics company-irony company-c-headers company-ansible color-theme auctex aggressive-indent))))
+    (emacs-rustfmt evil-magit magit rainbow-delimiters scheme-complete paredit racket-mode company-quickhelp ggtags predictive-mode predictive markdown-mode meghanada meghananda-emacs meghananda jde-mode company-emacs-eclim eclim emacs-eclim rustfmt flycheck-package toml-mode clang-format racer exec-path-from-shell which-key use-package smex rich-minority restart-emacs py-yapf monokai-theme helm golden-ratio flycheck flx-ido evil-terminal-cursor-changer evil-surround evil-nerd-commenter evil-leader evil-exchange elpy company-statistics company-irony company-c-headers company-ansible color-theme auctex aggressive-indent))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
