@@ -80,6 +80,8 @@
                       '(lambda()
                          (save-excursion
                            (delete-trailing-whitespace))))))
+;; whitespace clean up mode
+(add-hook 'before-save-hook 'whitespace-cleanup)
 
 (eval-when-compile
   (require 'use-package))
@@ -95,11 +97,49 @@
 
 (use-package exec-path-from-shell
 
-             :load-path "~/.emacs.d/elisp/exec-path-from-shell/"
-             :config
-             (push "HISTFILE" exec-path-from-shell-variables)
-             (setq exec-path-from-shell-check-startup-files nil)
-             (exec-path-from-shell-initialize))
+  :load-path "~/.emacs.d/elisp/exec-path-from-shell/"
+  :config
+  (push "HISTFILE" exec-path-from-shell-variables)
+  (setq exec-path-from-shell-check-startup-files nil)
+  (exec-path-from-shell-initialize))
+
+;; Provides all the racket support
+(use-package racket-mode
+  :ensure t)
+
+(use-package scheme-complete :ensure t)
+
+;; (use-package rainbow-identifiers
+;;   :ensure t
+;;   :init
+;;   ;; (rainbow-identifiers-mode 1) doesn't work. have to set it up as a hoook
+;;   (progn
+;;     (add-hook 'prog-mode-hook 'rainbow-identifiers-mode)
+;;     (setq rainbow-identifiers-choose-face-function 'rainbow-identifiers-cie-l*a*b*-choose-face
+;;           rainbow-identifiers-cie-l*a*b*-lightness 70
+;;           rainbow-identifiers-cie-l*a*b*-saturation 30
+;;           rainbow-identifiers-cie-l*a*b*-color-count 20
+;;           ;; override theme faces
+;;           rainbow-identifiers-faces-to-override '(highlight-quoted-symbol
+;;                                                   font-lock-variable-name-face
+;;                                                   font-lock-function-name-face
+;;                                                   font-lock-type-face
+;;                                                   js2-function-param
+;;                                                   js2-external-variable
+;;                                                   js2-instance-member
+;;                                                   js2-private-function-call))))
+
+(use-package rainbow-delimiters
+  :ensure t
+  :init
+  (progn
+    (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+    (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)))
+
+(use-package paredit
+  :ensure t
+  :config
+  (add-hook 'racket-mode-hook #'enable-paredit-mode))
 
 ;; Mouse disable globally
 
@@ -145,8 +185,8 @@
          ("SPC" . nil)
          :map
          evil-normal-state-map
-	 (";" . evil-ex)
-	 (":"	.	evil-repeat-find-char)
+         (";" . evil-ex)
+         (":"	.	evil-repeat-find-char)
          :map    evil-motion-state-map
          ([left]     . windmove-left)
          ([right]    . windmove-right)
@@ -221,47 +261,47 @@
   :defer 12
   :diminish company-mode
   :commands (compay-mode
-	     company-complete
-	     company-complete-common
-	     company-complete-common-or-cycle
-	     company-files
-	     company-dabbrev
-	     company-ispell
-	     company-c-headers
-	     company-jedi
-	     company-auctex
-	     company--auto-completion
-	     company-julia)
+             company-complete
+             company-complete-common
+             company-complete-common-or-cycle
+             company-files
+             company-dabbrev
+             company-ispell
+             company-c-headers
+             company-jedi
+             company-auctex
+             company--auto-completion
+             company-julia)
   :init
   (setq company-minimum-prefix-length 1
-	company-require-match 1
-	company-selection-wrap-around t
-	company-dabbrev-downcase nil
-	company-tooltip-limit 15
-	company-tooltip-align-annotations t
-	company-idle-delay 0.1
-	company-begin-commands '(self-insert-command))
+        company-require-match 1
+        company-selection-wrap-around t
+        company-dabbrev-downcase nil
+        company-tooltip-limit 15
+        company-tooltip-align-annotations t
+        company-idle-delay 0.1
+        company-begin-commands '(self-insert-command))
   (eval-after-load 'company
     '(add-to-list 'company-backends '(company-files
-				      company-capf)))
+                                      company-capf)))
   :bind (("C-c f" . company-files)
-	 ("C-c a" . company-dabbrev)
-	 ("C-c d" . company-ispell)
-	 ("<tab>" . tab-indent-or-complete)
-	 ("TAB" . tab-indent-or-complete)
-	 ("M-t" . company-complete-common)
-	 :map company-active-map
-	 ("C-a" . company-abort)
-	 ("<tab>" . expand-snippet-or-complete-selection)
-	 ("TAB" . expand-snippet-or-complete-selection))
+         ("C-c a" . company-dabbrev)
+         ("C-c d" . company-ispell)
+         ("<tab>" . tab-indent-or-complete)
+         ("TAB" . tab-indent-or-complete)
+         ("M-t" . company-complete-common)
+         :map company-active-map
+         ("C-a" . company-abort)
+         ("<tab>" . expand-snippet-or-complete-selection)
+         ("TAB" . expand-snippet-or-complete-selection))
   :config
   (defun check-expansion ()
     (save-excursion
       (if (looking-at "\\_>") t
-	(backward-char 1)
-	(if (looking-at "\\.") t
-	  (backward-char 1)
-	  (if (looking-at "->") t nil)))))
+        (backward-char 1)
+        (if (looking-at "\\.") t
+          (backward-char 1)
+          (if (looking-at "->") t nil)))))
   (defun do-yas-expand ()
     (let ((yas/fallback-behavior 'return-nil))
       (yas/expand)))
@@ -273,31 +313,31 @@
      (t
       (indent-for-tab-command)
       (if (or (not yas-minor-mode)
-	      (null (do-yas-expand)))
-	  (if (check-expansion)
-	      (progn
-		(company-manual-begin)
-		(if (null company-candidates)
-		    (progn
-		      (company-abort)
-		      (indent-for-tab-command)))))))))
+              (null (do-yas-expand)))
+          (if (check-expansion)
+              (progn
+                (company-manual-begin)
+                (if (null company-candidates)
+                    (progn
+                      (company-abort)
+                      (indent-for-tab-command)))))))))
   (defun expand-snippet-or-complete-selection ()
     (interactive)
     (if (or (not yas-minor-mode)
-	    (null (do-yas-expand))
-	    (company-abort))
-	(company-complete-selection)))
+            (null (do-yas-expand))
+            (company-abort))
+        (company-complete-selection)))
   ;; Add yasnippet support for all company backends
   (defvar company-mode/enable-yas t
     "Enable yasnippet for every back-end")
   (defun company-mode/backend-with-yas (backend)
     (if (or (not company-mode/enable-yas)
-	    (and (listp backend) (member 'company-yasnippet backend)))
-	backend
+            (and (listp backend) (member 'company-yasnippet backend)))
+        backend
       (append (if (consp backend) backend (list backend))
-	      '(:with company-yasnippet))))
+              '(:with company-yasnippet))))
   (setq company-backends
-	(mapcar #'company-mode/backend-with-yas company-backends))
+        (mapcar #'company-mode/backend-with-yas company-backends))
   (global-company-mode))
 
 (use-package company-quickhelp
@@ -366,30 +406,30 @@
   (defun abort-company-or-yas ()
     (interactive)
     (if (null company-candidates)
-	(yas-abort-snippet)
+        (yas-abort-snippet)
       (company-abort)))
   (defun tab-complete-or-next-field ()
     (interactive)
     (if (or (not yas-minor-mode)
-	    (null (do-yas-expand)))
-	(if company-candidates
-	    (company-complete-selection)
-	  (if (check-expansion)
-	      (progn
-		(company-manual-begin)
-		(if (null company-candidates)
-		    (progn
-		      (company-abort)
-		      (yas-next-field))))
-	    (yas-next-field)))))
+            (null (do-yas-expand)))
+        (if company-candidates
+            (company-complete-selection)
+          (if (check-expansion)
+              (progn
+                (company-manual-begin)
+                (if (null company-candidates)
+                    (progn
+                      (company-abort)
+                      (yas-next-field))))
+            (yas-next-field)))))
   :bind (:map yas-minor-mode-map
-	      ([tab] . nil)
-	      ("TAB" . nil)
-	      :map yas-keymap
-	      ([tab] . tab-complete-or-next-field)
-	      ("TAB" . tab-complete-or-next-field)
-	      ("M-n" . yas-next-field)
-	      ("C-g" . abort-company-or-yas)))
+              ([tab] . nil)
+              ("TAB" . nil)
+              :map yas-keymap
+              ([tab] . tab-complete-or-next-field)
+              ("TAB" . tab-complete-or-next-field)
+              ("M-n" . yas-next-field)
+              ("C-g" . abort-company-or-yas)))
 
 (use-package markdown-mode
   :ensure t
@@ -405,7 +445,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Section for Predictive mode
-;; 
+;;
 (add-to-list 'load-path "~/.emacs.d/elisp/predictive/")
 (autoload 'predictive-mode "predictive" "predictive" t)
 (set-default 'predictive-auto-add-to-dict t)
@@ -513,12 +553,12 @@
   :bind
   (:map evil-normal-state-map
         ;; ("M-," . ggt)
-  	("M-." .  ggtags-find-tag-dwim))
+        ("M-." .  ggtags-find-tag-dwim))
   :config
   (add-hook 'c-mode-common-hook
-	    (lambda ()
-	      (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
-		(ggtags-mode 1))))
+            (lambda ()
+              (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
+                (ggtags-mode 1))))
   ;; :evil-leader ("," ggtags-find-tag-dwim)
   )
 ;; (add-to-list 'load-path "~/.emacs.d/elisp/custom/")
@@ -660,7 +700,7 @@
 ;;   :load-path "~/.emacs.d/elisp/emacs-racer/"
 ;;   :bind
 ;;   (:map evil-normal-state-map
-;; 	("M-," .  racer-find-definition))
+;;      ("M-," .  racer-find-definition))
 ;;   :config
 ;;   (add-hook 'rust-mode-hook #'racer-mode)
 ;;   (add-hook 'racer-mode-hook #'eldoc-mode))
@@ -763,7 +803,7 @@
  '(haskell-tags-on-save t)
  '(package-selected-packages
    (quote
-    (company-quickhelp ggtags predictive-mode predictive markdown-mode meghanada meghananda-emacs meghananda jde-mode company-emacs-eclim eclim emacs-eclim rustfmt flycheck-package toml-mode clang-format racer exec-path-from-shell which-key use-package smex rich-minority restart-emacs py-yapf monokai-theme helm golden-ratio flycheck flx-ido evil-terminal-cursor-changer evil-surround evil-nerd-commenter evil-leader evil-exchange elpy company-statistics company-irony company-c-headers company-ansible color-theme auctex aggressive-indent))))
+    (rainbow-delimiters scheme-complete paredit racket-mode company-quickhelp ggtags predictive-mode predictive markdown-mode meghanada meghananda-emacs meghananda jde-mode company-emacs-eclim eclim emacs-eclim rustfmt flycheck-package toml-mode clang-format racer exec-path-from-shell which-key use-package smex rich-minority restart-emacs py-yapf monokai-theme helm golden-ratio flycheck flx-ido evil-terminal-cursor-changer evil-surround evil-nerd-commenter evil-leader evil-exchange elpy company-statistics company-irony company-c-headers company-ansible color-theme auctex aggressive-indent))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

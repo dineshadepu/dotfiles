@@ -102,15 +102,15 @@ export PATH="/usr/local/git/bin:/sw/bin/:/usr/local/bin:/usr/local/:/usr/local/s
 export WORKON_HOME=~/.virtualenvs
 export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
 source /usr/local/bin/virtualenvwrapper.sh
-export PATH="/Users/harishraja/anaconda/bin:$PATH"
 export PATH=~/.cargo/bin:$PATH
 PATH=$HOME/.cabal/bin:$PATH
 export PATH="$HOME/Library/Haskell/bin:$PATH"
 export PATH="/Applications:$PATH"
+export PATH="/Applications/Racket v6 2.8/bin:$PATH"
 export PATH="/usr/local/bin:$PATH"
+export PATH="/Users/harishraja/anaconda/bin:$PATH"
 
 
 #To escape "no match found" ssh
 unsetopt nomatch
 # export PATH="/Users/harishraja/anaconda2/bin:$PATH"
-

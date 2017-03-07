@@ -17,6 +17,7 @@ Plug 'mhinz/vim-startify'
 Plug 'osyo-manga/vim-over', {'on': 'OverCommandLine'}
 Plug 'scrooloose/nerdtree'
 Plug 'sheerun/vim-polyglot'
+Plug 'wlangstroth/vim-racket'
 
 " Syntastic--------------------------------------------------------------------
 function! Installjshint(info)
