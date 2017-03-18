@@ -17,6 +17,9 @@
   (package-refresh-contents)
   )
  )
+(setq package-archives
+      (append package-archives
+              '(("melpa" . "http://melpa.milkbox.net/packages/"))))
 
 (setq package-archives
       '(("elpa" . "http://elpa.gnu.org/packages/")
@@ -54,6 +57,8 @@
 (setq-default indent-tabs-mode nil)
 (global-whitespace-mode -1)
 (global-set-key (kbd "M-x") 'helm-M-x)
+(define-key global-map [?\s-s] 'save-buffer)
+;; (global-set-key [(super s)] 'save-buffer)
 
 ;; backup files nil
 (setq make-backup-files nil)
@@ -91,6 +96,19 @@
                            (delete-trailing-whitespace))))))
 ;; whitespace clean up mode
 (add-hook 'before-save-hook 'whitespace-cleanup)
+
+;; Copy to clipboard
+(defun copy-from-osx ()
+  (shell-command-to-string "pbpaste"))
+
+(defun paste-to-osx (text &optional push)
+  (let ((process-connection-type nil))
+    (let ((proc (start-process "pbcopy" "*Messages*" "pbcopy")))
+      (process-send-string proc text)
+      (process-send-eof proc))))
+
+(setq interprogram-cut-function 'paste-to-osx)
+(setq interprogram-paste-function 'copy-from-osx)
 
 (eval-when-compile
   (require 'use-package))
@@ -145,10 +163,10 @@
     (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
     (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)))
 
-(use-package paredit
-  :ensure t
-  :config
-  (add-hook 'racket-mode-hook #'enable-paredit-mode))
+;; (use-package paredit
+;;   :ensure t
+;;   :config
+;;   (add-hook 'racket-mode-hook #'enable-paredit-mode))
 
 ;; Mouse disable globally
 
@@ -261,6 +279,12 @@
 (define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
 
 
+(use-package avy
+  :ensure t
+  :config
+  (evil-leader/set-key
+    "q" 'avy-goto-char-2))
+
 (use-package magit
   :ensure t)
 
@@ -356,15 +380,13 @@
   (setq company-backends
         (mapcar #'company-mode/backend-with-yas company-backends))
   (global-company-mode))
+;; (add-hook 'after-init-hook 'global-company-mode)
 
-(use-package company-quickhelp
-  :ensure t
-  :pin melpa-stable
-  :init
-  (company-quickhelp-mode 1)
-  (setq company-quickhelp-delay nil)
-  :config
-  (define-key company-active-map (kbd "M-h") #'company-quickhelp-manual-begin))
+(defun add-pcomplete-to-capf ()
+  (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
+
+(add-hook 'org-mode-hook #'add-pcomplete-to-capf)
+
 
 (use-package company-statistics
   :ensure t
@@ -481,6 +503,7 @@
       (candidates (predictive-complete arg))))
   (load "dict-english")
   (add-to-list 'company-backends '(company-predictive)))
+(add-hook 'org-mode-hook 'predictive-mode)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; (use-package predictive
@@ -510,7 +533,10 @@
            (defalias 'workon 'pyvenv-workon)
            ;; (elpy-use-cpython "/usr/local/bin/python3")
            ;; (setq elpy-rpc-python-command "python3")
+           ;; (setq 'python-indent-offset 4)
            (setq company-minimum-prefix-length 1)
+           ;; (elpy-use-ipython)
+           ;; (elpy-clean-modeline)
            (elpy-enable)))
 
 (use-package ido
@@ -695,9 +721,9 @@
 
 (use-package py-yapf
   :ensure t
-  :diminish py-yapf
-  :config
-  (add-hook 'python-mode-hook 'py-yapf-enable-on-save))
+  :diminish py-yapf)
+  ;; :config
+  ;; (add-hook 'python-mode-hook 'py-yapf-enable-on-save))
 
 
 ;; (use-package rust-mode
@@ -734,9 +760,9 @@
   )
 (add-hook 'rust-mode-hook 'my-rust-mode-hooks)
 
-(use-package rustfmt
-  :config
-  (define-key rust-mode-map (kbd "C-c C-f") #'rustfmt-format-buffer))
+;; (use-package rustfmt
+;;   :config
+;;   (define-key rust-mode-map (kbd "C-c C-f") #'rustfmt-format-buffer))
 
 (use-package toml-mode
   :ensure t)
@@ -812,6 +838,15 @@
 ;; (use-package jdee
 ;;   :ensure t)
 
+
+(use-package smartparens
+  :ensure t
+  :diminish smartparens-mode
+  :config
+  (progn
+    (require 'smartparens-config)
+    (smartparens-global-mode 1)))
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -822,7 +857,7 @@
  '(haskell-tags-on-save t)
  '(package-selected-packages
    (quote
-    (emacs-rustfmt evil-magit magit rainbow-delimiters scheme-complete paredit racket-mode company-quickhelp ggtags predictive-mode predictive markdown-mode meghanada meghananda-emacs meghananda jde-mode company-emacs-eclim eclim emacs-eclim rustfmt flycheck-package toml-mode clang-format racer exec-path-from-shell which-key use-package smex rich-minority restart-emacs py-yapf monokai-theme helm golden-ratio flycheck flx-ido evil-terminal-cursor-changer evil-surround evil-nerd-commenter evil-leader evil-exchange elpy company-statistics company-irony company-c-headers company-ansible color-theme auctex aggressive-indent))))
+    (avy smartparens emacs-rustfmt evil-magit magit rainbow-delimiters scheme-complete paredit racket-mode company-quickhelp ggtags predictive-mode predictive markdown-mode meghanada meghananda-emacs meghananda jde-mode company-emacs-eclim eclim emacs-eclim rustfmt flycheck-package toml-mode clang-format racer exec-path-from-shell which-key use-package smex rich-minority restart-emacs py-yapf monokai-theme helm golden-ratio flycheck flx-ido evil-terminal-cursor-changer evil-surround evil-nerd-commenter evil-leader evil-exchange elpy company-statistics company-irony company-c-headers company-ansible color-theme auctex aggressive-indent))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
