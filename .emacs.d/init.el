@@ -98,17 +98,17 @@
 (add-hook 'before-save-hook 'whitespace-cleanup)
 
 ;; Copy to clipboard
-(defun copy-from-osx ()
-  (shell-command-to-string "pbpaste"))
+;; (defun copy-from-osx ()
+;;   (shell-command-to-string "pbpaste"))
 
-(defun paste-to-osx (text &optional push)
-  (let ((process-connection-type nil))
-    (let ((proc (start-process "pbcopy" "*Messages*" "pbcopy")))
-      (process-send-string proc text)
-      (process-send-eof proc))))
+;; (defun paste-to-osx (text &optional push)
+;;   (let ((process-connection-type nil))
+;;     (let ((proc (start-process "pbcopy" "*Messages*" "pbcopy")))
+;;       (process-send-string proc text)
+;;       (process-send-eof proc))))
 
-(setq interprogram-cut-function 'paste-to-osx)
-(setq interprogram-paste-function 'copy-from-osx)
+;; (setq interprogram-cut-function 'paste-to-osx)
+;; (setq interprogram-paste-function 'copy-from-osx)
 
 (eval-when-compile
   (require 'use-package))
@@ -240,7 +240,7 @@
             (evil-leader/set-key "," 'elpy-goto-definition)
             (evil-leader/set-key "f" 'ff-find-other-file)
             (evil-leader/set-key "r" 'restart-emacs)
-            (evil-leader/set-key "c" 'save-buffers-kill-terminal)
+            (evil-leader/set-key "c" 'tramp-cleanup-all-connections)
             (evil-leader/set-key "w" 'ispell-word)
             (evil-leader/set-key "g" 'magit-status)
             ;; (evil-leader/set-key "h" 'helm-M-x)
@@ -539,12 +539,20 @@
            ;; (elpy-clean-modeline)
            (elpy-enable)))
 
+
+(use-package py-yapf
+  :ensure t
+  :diminish py-yapf)
+;; :config
+;; (add-hook 'python-mode-hook 'py-yapf-enable-on-save))
+
+
 (use-package ido
-             :ensure t
-             :config(progn
-                      (setq ido-enable-flex-matching t)
-                      (setq ido-everywhere t)
-                      (ido-mode 1)))
+  :ensure t
+  :config(progn
+           (setq ido-enable-flex-matching t)
+           (setq ido-everywhere t)
+           (ido-mode 1)))
 
 
 (use-package flx-ido
@@ -588,6 +596,11 @@
 
 ;; Emacs c++ environment
 
+;; ------------------------------------------------
+;; ------------------------------------------------
+
+;; c++ development irony starts here
+
 ;; tags for code navigation
 (use-package ggtags
   :ensure t
@@ -604,14 +617,7 @@
                 (ggtags-mode 1))))
   ;; :evil-leader ("," ggtags-find-tag-dwim)
   )
-;; (add-to-list 'load-path "~/.emacs.d/elisp/custom/")
-;; (add-to-list 'load-path "~/.emacs.d/elisp/custom/setup-general.el")
 
-;; (require 'setup-general)
-;; (if (version< emacs-version "24.4")
-;;   (require 'setup-helm-gtags))
-;; ;; (require 'setup-ggtags)
-;; (require 'setup-cedet)
 
 (defun setup-c-clang-options ()
   (setq irony-additional-clang-options (quote ("-std=c11"))))
@@ -660,70 +666,11 @@
     (add-hook 'c-mode-common-hook 'google-set-c-style)
     (add-hook 'c-mode-common-hook 'google-make-newline-indent)))
 
-;; (defun my-irony-mode-hook ()
-;;   (define-key irony-mode-map [remap completion-at-point]
-;;     'irony-completion-at-point-async)
-;;   (define-key irony-mode-map [remap complete-symbol]
-;;     'irony-completion-at-point-async))
+;; ------------------------------------------------
+;; ------------------------------------------------
 
-;; (use-package irony
-;;   :ensure t
-;;   :config
-;;   (progn
-;;     (use-package company-irony
-;;       :ensure t
-;;       :config
-;;       (setq company-minimum-prefix-length 1)
-;;       (add-to-list 'company-backends 'company-irony))
-;;     (add-hook 'irony-mode-hook 'electric-pair-mode)
-;;     (add-hook 'c++-mode-hook 'irony-mode)
-;;     (add-hook 'c-mode-hook 'irony-mode)
-;;     (add-hook 'irony-mode-hook 'my-irony-mode-hook)
-;;     (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
-;;     (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)))
+;; c++ development irony ends here
 
-
-
-;; (use-package web-mode
-;;   :load-path "~/.emacs.d/elisp/web-mode/"
-
-;;   :config
-;;   (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
-;;   (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
-;;   (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
-;;   (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
-;;   (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
-;;   (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
-;;   (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
-;;   (add-to-list 'auto-mode-alist '("\\.hbs$" . web-mode))
-;;   (add-to-list 'auto-mode-alist '("\\.tmpl$" . web-mode))
-;;   (add-to-list 'auto-mode-alist '("\\.html$" . web-mode))
-
-
-;;   (local-set-key (kbd "RET") 'newline-and-indent)
-;;   (setq web-mode-engines-alist
-;;         '(("php"    . "\\.phtml\\'")
-;;           ("blade"  . "\\.blade\\."))
-;;         )
-;;   (setq web-mode-markup-indent-offset 2)
-;;   (setq web-mode-code-indent-offset 2))
-;; (defun my-web-mode-hook ()
-;;   (setq web-mode-enable-auto-pairing nil))
-
-;; (add-hook 'web-mode-hook  'my-web-mode-hook)
-
-;; (defun sp-web-mode-is-code-context (id action context)
-;;   (and (eq action 'insert)
-;;        (not (or (get-text-property (point) 'part-side)
-;;                 (get-text-property (point) 'block-side)))))
-
-;; (sp-local-pair 'web-mode "<" nil :when '(sp-web-mode-is-code-context))
-
-(use-package py-yapf
-  :ensure t
-  :diminish py-yapf)
-  ;; :config
-  ;; (add-hook 'python-mode-hook 'py-yapf-enable-on-save))
 
 
 ;; (use-package rust-mode
@@ -739,103 +686,37 @@
 ;;   :load-path "~/.emacs.d/elisp/flycheck-package/"
 ;;   :init (with-eval-after-load 'flycheck (flycheck-package-setup)))
 
-(use-package racer
-  :ensure t
-  ;; :load-path "~/.emacs.d/elisp/emacs-racer/"
-  :bind
-  (:map evil-normal-state-map
-        ("M-," .  racer-find-definition))
-  :config
-  (add-hook 'rust-mode-hook #'racer-mode)
-  (add-hook 'racer-mode-hook #'eldoc-mode))
+;; rust mode stars here
 
-(use-package emacs-rustfmt
-  ;; :ensure t
-  :load-path "~/.emacs.d/elisp/emacs-rustfmt/"
-  :config
-  (add-hook 'rust-mode-hook #'rustfmt-enable-on-save))
+;; (use-package racer
+;;   :ensure t
+;; :load-path "~/.emacs.d/elisp/emacs-racer/"
+;; :bind
+;; (:map evil-normal-state-map
+;;       ("M-," .  racer-find-definition))
+;; :config
+;; (add-hook 'rust-mode-hook #'racer-mode)
+;; (add-hook 'racer-mode-hook #'eldoc-mode))
 
-(defun my-rust-mode-hooks ()
-  (add-hook 'before-save-hook 'rustfmt-format-buffer)
-  )
-(add-hook 'rust-mode-hook 'my-rust-mode-hooks)
+;; (use-package emacs-rustfmt
+;;   :ensure t
+;;   :load-path "~/.emacs.d/elisp/emacs-rustfmt/"
+;;   :config
+;;   (add-hook 'rust-mode-hook #'rustfmt-enable-on-save))
+
+;; (defun my-rust-mode-hooks ()
+;;   (add-hook 'before-save-hook 'rustfmt-format-buffer)
+;;   )
+;; (add-hook 'rust-mode-hook 'my-rust-mode-hooks)
 
 ;; (use-package rustfmt
 ;;   :config
 ;;   (define-key rust-mode-map (kbd "C-c C-f") #'rustfmt-format-buffer))
 
-(use-package toml-mode
-  :ensure t)
-
-(use-package clang-format
-  :ensure t)
-
-;; (use-package flycheck-haskell
-;;   :commands flycheck-haskell-setup)
-
-;; (let ((my-cabal-path (expand-file-name "~/.cabal/bin")))
-;;   (setenv "PATH" (concat my-cabal-path path-separator (getenv "PATH")))
-;;   (add-to-list 'exec-path my-cabal-path))
-;; (custom-set-variables '(haskell-tags-on-save t))
-
-;; (use-package haskell-mode
-;;   :mode "\\.hs\\'"
-;;   :commands haskell-mode
-;;   :bind ("C-c C-s" . fix-imports)
-;;   :config
-;;   (custom-set-variables
-;;    '(haskell-ask-also-kill-buffers nil)
-;;    '(haskell-process-type (quote stack-ghci))
-;;    '(haskell-interactive-popup-errors nil))
-
-;;   (add-hook 'haskell-mode-hook 'haskell-indentation-mode)
-;;   (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
-;;   (add-hook 'haskell-mode-hook 'flycheck-mode)
-;;   (add-hook 'haskell-mode-hook 'hindent-mode)
-;;   (add-hook 'haskell-mode-hook (lambda ()
-;;                                  (add-hook 'before-save-hook 'haskell-mode-format-imports nil t)
-;;                                  (add-hook 'before-save-hook 'hindent-reformat-buffer)))
-;;   )
-
-;; (use-package haskell-interactive-mode
-;;   :commands haskell-interactive-mode
-;;   :config
-;;   (define-key haskell-interactive-mode-map (kbd "C-c C-t") nil))
-
-;; (use-package meghanada
-;;   :ensure t
-;;   :init
-;;   (add-hook 'java-mode-hook
-;;             (lambda ()
-;;               ;; meghanada-mode on
-;;               (meghanada-mode t)
-;;               (add-hook 'before-save-hook 'meghanada-code-beautify-before-save))))
-
-;; (use-package company-emacs-eclim
+;; (use-package toml-mode
 ;;   :ensure t)
 
-;; (use-package eclim
-;;   :ensure t
-;;   :init
-;;   (add-hook 'java-mode-hook (lambda ()
-;;                               (setq c-basic-offset 4)))
-;;   :config
-;;   (custom-set-variables
-;;    '(eclim-eclipse-dirs '("/Applications/Eclipse.app/"))
-;;    '(eclim-executable "/Applications/Eclipse.app/Contents/Eclipse/eclim/"))
-;;   (require 'company)
-;;   (require 'company-emacs-eclim)
-;;   (company-emacs-eclim-setup)
-;;   (global-company-mode t)
-;;   (setq help-at-pt-display-when-idle t)
-;;   (setq help-at-pt-timer-delay nil)
-;;   (help-at-pt-set-timer)
-;;   (require 'eclim)
-;;   (require 'eclimd)
-;;   (setq eclimd-autostart t)
-;;   (global-eclim-mode))
-
-;; (use-package jdee
+;; (use-package clang-format
 ;;   :ensure t)
 
 
@@ -847,17 +728,31 @@
     (require 'smartparens-config)
     (smartparens-global-mode 1)))
 
+
+;; ESS for statistics
+
+(add-to-list 'load-path "~/.emacs.d/elisp/ESS/lisp/")
+(load "ess-site")
+auto-mode-alist (append (list '("\\.c$" . c-mode)
+                              '("\\.tex$" . latex-mode)
+                              '("\\.S$" . S-mode)
+                              '("\\.s$" . S-mode)
+                              '("\\.R$" . R-mode)
+                              '("\\.r$" . R-mode)
+                              '("\\.html$" . html-mode)
+                              '("\\.emacs" . emacs-lisp-mode)
+                              )
+                        auto-mode-alist)
+
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(eclim-eclipse-dirs (quote ("/Applications/Eclipse.app/")))
- '(eclim-executable "/Applications/Eclipse.app/Contents/Eclipse/eclim/")
- '(haskell-tags-on-save t)
  '(package-selected-packages
    (quote
-    (avy smartparens emacs-rustfmt evil-magit magit rainbow-delimiters scheme-complete paredit racket-mode company-quickhelp ggtags predictive-mode predictive markdown-mode meghanada meghananda-emacs meghananda jde-mode company-emacs-eclim eclim emacs-eclim rustfmt flycheck-package toml-mode clang-format racer exec-path-from-shell which-key use-package smex rich-minority restart-emacs py-yapf monokai-theme helm golden-ratio flycheck flx-ido evil-terminal-cursor-changer evil-surround evil-nerd-commenter evil-leader evil-exchange elpy company-statistics company-irony company-c-headers company-ansible color-theme auctex aggressive-indent))))
+    (processing-mode avy smartparens emacs-rustfmt evil-magit magit rainbow-delimiters scheme-complete paredit racket-mode company-quickhelp ggtags predictive-mode predictive markdown-mode meghanada meghananda-emacs meghananda jde-mode company-emacs-eclim eclim emacs-eclim rustfmt flycheck-package toml-mode clang-format racer exec-path-from-shell which-key use-package smex rich-minority restart-emacs py-yapf monokai-theme helm golden-ratio flycheck flx-ido evil-terminal-cursor-changer evil-surround evil-nerd-commenter evil-leader evil-exchange elpy company-statistics company-irony company-c-headers company-ansible color-theme auctex aggressive-indent))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
