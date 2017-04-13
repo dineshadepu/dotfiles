@@ -4,7 +4,6 @@
 
 ;; -------------- normal functions -------------------
 ;;; code:
-(add-to-list 'load-path "~/.emacs.d/elisp")
 (require 'package)
 (setq package-enable-at-startup nil)
 
@@ -21,10 +20,10 @@
       (append package-archives
               '(("melpa" . "http://melpa.milkbox.net/packages/"))))
 
-(setq package-archives
-      '(("elpa" . "http://elpa.gnu.org/packages/")
-        ("melpa-stable" . "http://stable.melpa.org/packages/")
-        ("melpa" . "http://melpa.org/packages/")))
+;; (setq package-archives
+;;       '(("elpa" . "http://elpa.gnu.org/packages/")
+;;         ("melpa-stable" . "http://stable.melpa.org/packages/")
+;;         ("melpa" . "http://melpa.org/packages/")))
 (package-initialize)
 
 (unless (package-installed-p 'use-package)
@@ -75,6 +74,7 @@
 ;; disable auto save
 (setq auto-save-default nil)
 
+
 ;; Electric auto pair
 (electric-pair-mode t)
 
@@ -118,9 +118,13 @@
 ;; == Load Custom Theme ==
 (use-package color-theme :ensure t)
 (use-package monokai-theme
-             :ensure t
-             :init
-             (load-theme 'monokai t))
+  :ensure t
+  :init
+  (load-theme 'monokai t))
+;; (use-package zenburn-theme
+;;   :ensure t
+;;   :init
+;;   (load-theme 'zenburn t))
 
 (use-package exec-path-from-shell
   :ensure t
@@ -193,7 +197,8 @@
 (use-package which-key
   :ensure t
   :diminish which-key-mode
-  :config (which-key-mode))
+  :config (which-key-mode)
+  )
 
 
 (use-package evil
@@ -239,10 +244,11 @@
             (evil-leader/set-key "." 'elpy-goto-definition-other-window)
             (evil-leader/set-key "," 'elpy-goto-definition)
             (evil-leader/set-key "f" 'ff-find-other-file)
-            (evil-leader/set-key "r" 'restart-emacs)
+            (evil-leader/set-key "r" 'recentf-open-files)
             (evil-leader/set-key "c" 'tramp-cleanup-all-connections)
             (evil-leader/set-key "w" 'ispell-word)
             (evil-leader/set-key "g" 'magit-status)
+            (evil-leader/set-key "z" 'fzf)
             ;; (evil-leader/set-key "h" 'helm-M-x)
             (evil-leader/set-key "k" 'kill-this-buffer)))
 
@@ -314,7 +320,7 @@
              company--auto-completion
              company-julia)
   :init
-  (setq company-minimum-prefix-length 1
+  (setq company-minimum-prefix-length 2
         company-require-match 1
         company-selection-wrap-around t
         company-dabbrev-downcase nil
@@ -527,7 +533,8 @@
 
 
 (use-package elpy
-  :ensure t
+  :load-path "~/.emacs.d/elisp/elpy/"
+  ;; :ensure t
   :diminish elpy-mode
   :config(progn
            (defalias 'workon 'pyvenv-workon)
@@ -556,30 +563,31 @@
 
 
 (use-package flx-ido
-             :ensure t
-             :init
-             (progn
-               (setq gc-cons-threshold (* 20 (expt 2 20)) ; megabytes
-                     ido-use-faces nil))
-             :config
-             (flx-ido-mode 1))
+  :ensure t
+  :init
+  (progn
+    (setq gc-cons-threshold (* 20 (expt 2 20)) ; megabytes
+          ido-use-faces nil))
+  :config
+  (flx-ido-mode 1))
 
 
 
-(use-package smex
-             :ensure t
-             :bind
-             (([remap execute-extended-command] . smex)
-              ("M-X" . smex-major-mode-commands)))
-
-;; (use-package helm
+;; (use-package smex
 ;;   :ensure t
-;;   :init
-;;   (progn
-;;     (require 'helm-config)
-;;     (helm-mode 1)
-;;     (set-face-attribute 'helm-selection nil
-;;             )))
+;;   :bind
+;;   (([remap execute-extended-command] . smex)
+;;    ("M-X" . smex-major-mode-commands)))
+
+(use-package helm
+  :ensure t
+  :bind (("C-x C-f" . helm-find-files))
+  :init
+  (progn
+    (require 'helm-config)
+    (helm-mode 1)
+    (set-face-attribute 'helm-selection nil
+                        )))
 
 (use-package golden-ratio                 ; Auto resize windows
   :ensure t
@@ -602,74 +610,79 @@
 ;; c++ development irony starts here
 
 ;; tags for code navigation
-(use-package ggtags
-  :ensure t
-  :init
-  (setq path-to-ctags "/usr/local/bin/ctags")
-  :bind
-  (:map evil-normal-state-map
-        ;; ("M-," . ggt)
-        ("M-." .  ggtags-find-tag-dwim))
-  :config
-  (add-hook 'c-mode-common-hook
-            (lambda ()
-              (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
-                (ggtags-mode 1))))
-  ;; :evil-leader ("," ggtags-find-tag-dwim)
-  )
+;; (use-package ggtags
+;;   :ensure t
+;;   :init
+;;   (setq path-to-ctags "/usr/local/bin/ctags")
+;;   :bind
+;;   (:map evil-normal-state-map
+;;         ;; ("M-," . ggt)
+;;         ("M-." .  ggtags-find-tag-dwim))
+;;   :config
+;;   (add-hook 'c-mode-common-hook
+;;             (lambda ()
+;;               (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
+;;                 (ggtags-mode 1))))
+;;   ;; :evil-leader ("," ggtags-find-tag-dwim)
+;;   )
 
 
-(defun setup-c-clang-options ()
-  (setq irony-additional-clang-options (quote ("-std=c11"))))
+;; (defun setup-c-clang-options ()
+;;   (setq irony-additional-clang-options (quote ("-std=c11"))))
 
-(defun setup-cpp-clang-options ()
-  (setq irony-additional-clang-options (quote ("-std=c++14" "-stdlib=libc++"))))
+;; (defun setup-cpp-clang-options ()
+;;   (setq irony-additional-clang-options (quote ("-std=c++11" "-I/usr/local/include/Eigen/Eigen/")))
+;;   (setq irony-additional-clang-options '("-std=c++11"))
+;;   (setq irony-additional-clang-options (quote ("-std=c++14" "-stdlib=libc++"))))
 
-(use-package irony
-  :ensure t
-  :init
-  (progn
-    (add-hook 'c++-mode-hook 'irony-mode)
-    (add-hook 'c-mode-hook 'irony-mode)
-    (add-hook 'objc-mode-hook 'irony-mode))
-  :config
-  (progn
-    (add-hook 'c++-mode-hook 'setup-cpp-clang-options)
-    (add-hook 'c-mode-hook 'setup-c-clang-options)))
+;; (use-package irony
+;;   :ensure t
+;;   :init
+;;   (progn
+;;     (add-hook 'c++-mode-hook 'irony-mode)
+;;     (add-hook 'c-mode-hook 'irony-mode)
+;;     (add-hook 'objc-mode-hook 'irony-mode))
+;;   :config
+;;   (progn
+;;     ;; (setq irony-libclang-additional-flags
+;;     ;;       (append '("-I" "inc") irony-libclang-additional-flags))
+;;     (add-hook 'c++-mode-hook 'setup-cpp-clang-options)
+;;     (add-hook 'c-mode-hook 'setup-c-clang-options)))
 
-(use-package company-irony
-  :ensure t
-  :config
-  (progn
-    (eval-after-load 'company '(add-to-list 'company-backends 'company-irony))
-    (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)))
+;; (use-package company-irony
+;;   :ensure t
+;;   :config
+;;   (progn
+;;     (eval-after-load 'company '(add-to-list 'company-backends 'company-irony))
+;;     (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)))
 
-(use-package flycheck-irony
-  :ensure t
-  :config
-  (eval-after-load 'flycheck
-    '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup)))
+;; (use-package flycheck-irony
+;; :ensure t
+;; :config
+;; (eval-after-load 'flycheck
+;;   '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup)))
 
-(use-package clang-format
-  :ensure t
-  :config
-  (progn
-    (setq clang-format-style "llvm")
-    (add-hook 'c++-mode-hook (lambda () (add-hook 'before-save-hook 'clang-format-buffer nil t)))
-    (add-hook 'c-mode-hook (lambda () (add-hook 'before-save-hook 'clang-format-buffer nil t)))))
+;; (use-package clang-format
+;;   :ensure t
+;;   :config
+;;   (progn
+;;     (setq clang-format-style "llvm")
+;; (add-hook 'c++-mode-hook (lambda () (add-hook 'before-save-hook 'clang-format-buffer nil t)))
+;; (add-hook 'c-mode-hook (lambda () (add-hook 'before-save-hook 'clang-format-buffer nil t)))))
 
-(use-package google-c-style
-  :ensure t
-  :defer t
-  :config
-  (progn
-    (add-hook 'c-mode-common-hook 'google-set-c-style)
-    (add-hook 'c-mode-common-hook 'google-make-newline-indent)))
-
-;; ------------------------------------------------
-;; ------------------------------------------------
+;; (use-package google-c-style
+;;   :ensure t
+;;   :defer t
+;;   :config
+;;   (progn
+;;     (add-hook 'c-mode-common-hook 'google-set-c-style)
+;;     (add-hook 'c-mode-common-hook 'google-make-newline-indent)))
 
 ;; c++ development irony ends here
+
+;; ------------------------------------------------
+;; ------------------------------------------------
+
 
 
 
@@ -689,7 +702,7 @@
 ;; rust mode stars here
 
 ;; (use-package racer
-;;   :ensure t
+;; :ensure t
 ;; :load-path "~/.emacs.d/elisp/emacs-racer/"
 ;; :bind
 ;; (:map evil-normal-state-map
@@ -728,21 +741,116 @@
     (require 'smartparens-config)
     (smartparens-global-mode 1)))
 
+;; (use-package cython-mode
+;;   :ensure t
+;;   :config
+;;   (require 'cython-mode))
+
+;; (use-package sr-speedbar
+;;   :load-path "~/.emacs.d/elisp/sr-speedbar.el"
+;;   :config
+;;   (require 'sr-speedbar))
+
+(use-package recentf
+  :ensure t
+  :config
+  (require 'recentf)
+  (recentf-mode 1)
+  (setq recentf-max-menu-items 25)
+  (global-set-key "\C-x\ \C-r" 'recentf-open-files))
+
+
+(use-package fzf
+  :ensure t)
+
+;; (use-package ensime-emacs
+;;   :load-path "~/.emacs.d/elisp/ensime-emacs"
+;;   )
 
 ;; ESS for statistics
 
-(add-to-list 'load-path "~/.emacs.d/elisp/ESS/lisp/")
-(load "ess-site")
-auto-mode-alist (append (list '("\\.c$" . c-mode)
-                              '("\\.tex$" . latex-mode)
-                              '("\\.S$" . S-mode)
-                              '("\\.s$" . S-mode)
-                              '("\\.R$" . R-mode)
-                              '("\\.r$" . R-mode)
-                              '("\\.html$" . html-mode)
-                              '("\\.emacs" . emacs-lisp-mode)
-                              )
-                        auto-mode-alist)
+;; (add-to-list 'load-path "~/.emacs.d/elisp/ESS/lisp/")
+;; (load "ess-site")
+;; auto-mode-alist (append (list '("\\.c$" . c-mode)
+;;                               '("\\.tex$" . latex-mode)
+;;                               '("\\.S$" . S-mode)
+;;                               '("\\.s$" . S-mode)
+;;                               '("\\.R$" . R-mode)
+;;                               '("\\.r$" . R-mode)
+;;                               '("\\.html$" . html-mode)
+;;                               '("\\.emacs" . emacs-lisp-mode)
+;;                               )
+;;                         auto-mode-alist)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; CPP rtags and irony combined unique development
+(use-package rtags
+  :ensure t)
+
+(use-package company-rtags
+  :ensure t)
+
+(setq rtags-completions-enabled t)
+(eval-after-load 'company
+  '(add-to-list
+    'company-backends 'company-rtags))
+(setq rtags-autostart-diagnostics t)
+(rtags-enable-standard-keybindings)
+
+;; Install irony and keep this in init file
+(add-hook 'c++-mode-hook 'irony-mode)
+(add-hook 'c-mode-hook 'irony-mode)
+(add-hook 'objc-mode-hook 'irony-mode)
+
+(defun my-irony-mode-hook ()
+  (define-key irony-mode-map [remap completion-at-point]
+    'irony-completion-at-point-async)
+  (define-key irony-mode-map [remap complete-symbol]
+    'irony-completion-at-point-async))
+
+(add-hook 'irony-mode-hook 'my-irony-mode-hook)
+(add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+
+;; Company irony for auto completion
+(add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
+(setq company-backends (delete 'company-semantic company-backends))
+
+(setq company-idle-delay 0)
+(define-key c-mode-map [(tab)] 'company-complete)
+(define-key c++-mode-map [(tab)] 'company-complete)
+
+
+;; Header file completion with c headers
+(require 'company-irony-c-headers)
+(eval-after-load 'company
+  '(add-to-list
+    'company-backends '(company-irony-c-headers company-irony)))
+
+;; flycheck for c and cpp
+(add-hook 'c++-mode-hook 'flycheck-mode)
+(add-hook 'c-mode-hook 'flycheck-mode)
+
+(require 'flycheck-rtags)
+
+(defun my-flycheck-rtags-setup ()
+  (flycheck-select-checker 'rtags)
+  (setq-local flycheck-highlighting-mode nil) ;; RTags creates more accurate overlays.
+  (setq-local flycheck-check-syntax-automatically nil))
+;; c-mode-common-hook is also called by c++-mode
+(add-hook 'c-mode-common-hook #'my-flycheck-rtags-setup)
+
+;; Integrating Irony with Flycheck
+(eval-after-load 'flycheck
+  '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
+
+
+;; CMake automation with cmake-ide
+(cmake-ide-setup)
+
+;; Automatically create .dir-locals.el
+((nil . ((cmake-ide-build-dir . "<PATH_TO_PROJECT_BUILD_DIRECTORY>"))))
+
 
 
 (custom-set-variables
@@ -752,7 +860,7 @@ auto-mode-alist (append (list '("\\.c$" . c-mode)
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (processing-mode avy smartparens emacs-rustfmt evil-magit magit rainbow-delimiters scheme-complete paredit racket-mode company-quickhelp ggtags predictive-mode predictive markdown-mode meghanada meghananda-emacs meghananda jde-mode company-emacs-eclim eclim emacs-eclim rustfmt flycheck-package toml-mode clang-format racer exec-path-from-shell which-key use-package smex rich-minority restart-emacs py-yapf monokai-theme helm golden-ratio flycheck flx-ido evil-terminal-cursor-changer evil-surround evil-nerd-commenter evil-leader evil-exchange elpy company-statistics company-irony company-c-headers company-ansible color-theme auctex aggressive-indent))))
+    (rtags fzf ensime-emacs ensime sr-speedbar cython-mode solarized-theme zenburn-theme processing-mode avy smartparens emacs-rustfmt evil-magit magit rainbow-delimiters scheme-complete paredit racket-mode company-quickhelp ggtags predictive-mode predictive markdown-mode meghanada meghananda-emacs meghananda jde-mode company-emacs-eclim eclim emacs-eclim rustfmt flycheck-package toml-mode clang-format racer exec-path-from-shell which-key use-package smex rich-minority restart-emacs py-yapf monokai-theme helm golden-ratio flycheck flx-ido evil-terminal-cursor-changer evil-surround evil-nerd-commenter evil-leader evil-exchange elpy company-statistics company-irony company-c-headers company-ansible color-theme auctex aggressive-indent))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
