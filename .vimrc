@@ -276,7 +276,7 @@ nmap { {zz
 nmap } }zz
 
 " abbrv email
-iabbr email mutaabhinav@gmail.com
+iabbr email adepu.dinesh.a@gmail.com
 
 inoremap <F1> <ESC>
 nnoremap <F1> <ESC>
@@ -285,6 +285,12 @@ vnoremap <F1> <ESC>
 " change <ESC> to jj
 inoremap jj <ESC>
 
+"swap : -> ;
+noremap : ;
+noremap ; :
+
+"Splits
+nnoremap <C-w>o <leader>1
 " Quit Buffer
 nnoremap <leader>k :q<CR>
 
@@ -295,8 +301,8 @@ nnoremap <leader>w <C-w>v<C-w>
 nnoremap <leader>o <C-w><C-o>
 
 " Open files
-nnoremap <leader>e :e
-nnoremap <leader>3 :vsplit 
+nnoremap <leader>e :e<SPACE><TAB>
+nnoremap <leader>3 :vsplit
 
 " Switch between two buffers, Change between two buffers
 nmap <C-Tab> :bn<CR>
