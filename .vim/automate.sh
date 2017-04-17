@@ -1,5 +1,3 @@
-mkdir -p ~/.vim/autoload
-mv .vimrc ~/
-mv plug.vim ~/.vim/autoload/
+mv -r ~/dotfiles/.vim ~/
+mv ~/dotfiles/.vimrc ~/
 cd
-
