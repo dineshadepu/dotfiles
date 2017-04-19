@@ -499,3 +499,7 @@ inoremap <M-n> <Down>
 " C/C++ -----------------------------------------------------------------------
 " -----------------------------------------------------------------------------
 let g:clang_library_path='/home/abhinav/.clang/lib/libclang.so.3.9'
+:set formatoptions-=cro
+
+"no backup files
+set nobackup
