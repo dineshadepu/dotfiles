@@ -198,26 +198,29 @@
   :init (global-evil-leader-mode)
   :config (progn
             (evil-leader/set-leader ",")
-            (evil-leader/set-key "b" 'switch-to-buffer)
-            (evil-leader/set-key "s" 'save-buffer)
-            (evil-leader/set-key "e" 'find-file)
-            (evil-leader/set-key "1" 'delete-other-windows)
-            (evil-leader/set-key "x" 'bookmark-jump)
-            (evil-leader/set-key "0" 'delete-window)
-            (evil-leader/set-key "3" 'split-window-right)
-            (evil-leader/set-key "2" 'split-window-below)
-            (evil-leader/set-key "." 'elpy-goto-definition-other-window)
-            (evil-leader/set-key "," 'elpy-goto-definition)
-            (evil-leader/set-key "f" 'ff-find-other-file)
-            (evil-leader/set-key "r" 'recentf-open-files)
-            (evil-leader/set-key "c" 'tramp-cleanup-all-connections)
-            (evil-leader/set-key "w" 'ispell-word)
-            (evil-leader/set-key "g" 'magit-status)
-            (evil-leader/set-key "z" 'fzf)
-            (evil-leader/set-key "m" 'windmove-right)
-            (evil-leader/set-key "n" 'windmove-left)
-            ;; (evil-leader/set-key "h" 'helm-M-x)
-            (evil-leader/set-key "k" 'kill-this-buffer)))
+              (evil-leader/set-key "r" 'projectile-ripgrep)
+              (evil-leader/set-key "b" 'helm-buffers-list)
+              (evil-leader/set-key "e" 'helm-find-files)
+              (evil-leader/set-key "f" 'helm-projectile-find-file)
+              (evil-leader/set-key "t" 'org-babel-tangle)
+              (evil-leader/set-key "h" 'helm-mini)
+              (evil-leader/set-key "1" 'delete-other-windows)
+              (evil-leader/set-key "x" 'helm-filtered-bookmarks)
+              (evil-leader/set-key "0" 'delete-window)
+              (evil-leader/set-key "3" 'split-window-right)
+              (evil-leader/set-key "2" 'split-window-below)
+              (evil-leader/set-key "." 'elpy-goto-definition-other-window)
+              (evil-leader/set-key "," 'elpy-goto-definition)
+              (evil-leader/set-key "i" 'org-ref-insert-ref-link)
+              (evil-leader/set-key "l" 'org-ref-helm-insert-label-link)
+              (evil-leader/set-key "w" 'ispell-word)
+              (evil-leader/set-key "g" 'magit-status)
+              (evil-leader/set-key "n" 'windmove-left)
+              (evil-leader/set-key "m" 'windmove-right)
+              (evil-leader/set-key "p" 'windmove-up)
+              (evil-leader/set-key "<SPC>" 'windmove-down)
+              (evil-leader/set-key "v" 'pdf-view-goto-page)
+              (evil-leader/set-key "k" 'kill-this-buffer)))
 
 ;; evil cursor terminal
 (use-package evil-terminal-cursor-changer
@@ -277,25 +280,25 @@
   (add-hook 'LaTeX-mode-hook 'predictive-mode))
 
 
-(use-package elpy
-  :ensure t
-  :diminish elpy-mode
-  :config(progn
-           ;; (defalias 'workon 'pyvenv-workon)
-           ;; (elpy-use-cpython "/usr/local/bin/python3")
-           ;; (setq elpy-rpc-python-command "python3")
-           ;; (setq 'python-indent-offset 4)
-           (setq company-minimum-prefix-length 1)
-           ;; (elpy-use-ipython)
-           ;; (elpy-clean-modeline)
-           (elpy-enable)))
+;; (use-package elpy
+;;   :ensure t
+;;   :diminish elpy-mode
+;;   :config(progn
+;;            ;; (defalias 'workon 'pyvenv-workon)
+;;            ;; (elpy-use-cpython "/usr/local/bin/python3")
+;;            ;; (setq elpy-rpc-python-command "python3")
+;;            ;; (setq 'python-indent-offset 4)
+;;            (setq company-minimum-prefix-length 1)
+;;            ;; (elpy-use-ipython)
+;;            ;; (elpy-clean-modeline)
+;;            (elpy-enable)))
 
 
 (use-package ido
   :ensure t
   :config(progn
            (setq ido-enable-flex-matching t)
-           (setq ido-everywhere t)
+           ;; (setq ido-everywhere t)
            (ido-mode 1)))
 
 
@@ -354,6 +357,61 @@
 (use-package fzf
   :ensure t)
 
+
+(use-package rainbow-delimiters
+  :ensure t
+  :init
+  (progn
+    (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+    (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)))
+
+
+(use-package projectile
+  :config
+  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+  (projectile-mode +1))
+(projectile-global-mode)
+ (use-package helm
+     :diminish helm-mode
+     :defer t
+     :bind (("C-x C-f" . helm-find-files))
+     :init
+     (progn
+        ;; (require 'helm-config)
+        (helm-mode 1)
+        (set-face-attribute 'helm-selection nil
+                            )))
+   ;; (global-set-key (kbd "M-x") #'helm-M-x)
+   (global-set-key (kbd "C-x r b") #'helm-filtered-bookmarks)
+   (global-set-key (kbd "C-x C-f") #'helm-find-files)
+   (helm-mode 1)
+   (setq helm-M-x-fuzzy-match t)
+
+   ;; helm mini
+   (global-set-key (kbd "C-x b") 'helm-mini)
+
+   (setq helm-buffers-fuzzy-matching t
+          helm-recentf-fuzzy-match    t)
+
+   (use-package helm-swoop
+     :bind (("M-i" . helm-swoop)))
+
+   ;;(use-package helm-fuzzier)
+   ;;(require 'helm-fuzzier)
+
+   ;;(helm-fuzzier-mode 1)
+   (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
+   (global-set-key (kbd "M-y") 'helm-show-kill-ring)
+
+   ;; helm projectile
+   (use-package helm-projectile)
+   (helm-projectile-on)
+
+   (setq projectile-completion-system 'helm)
+   (setq projectile-switch-project-action 'helm-projectile)
+
+
 ;; kill all oher buffers
 (defun nuke-all-buffers ()
   (interactive)
@@ -380,8 +438,9 @@
  '(ansi-term-color-vector
    [unspecified "#2d2a2e" "#ff6188" "#a9dc76" "#ffd866" "#78dce8" "#ab9df2" "#a1efe4" "#fcfcfa"])
  '(custom-safe-themes
-   '("89c50e934a32921ed51da9fa883484a433f32fbc5cf9780860d13322e23edcde" default))
+   '("c8b83e7692e77f3e2e46c08177b673da6e41b307805cd1982da9e2ea2e90e6d7" "8dbbcb2b7ea7e7466ef575b60a92078359ac260c91fe908685b3983ab8e20e3f" "89c50e934a32921ed51da9fa883484a433f32fbc5cf9780860d13322e23edcde" default))
  '(helm-minibuffer-history-key "M-p")
+ '(ispell-dictionary nil)
  '(package-selected-packages
    '(monokai-alt-theme yasnippet which-key use-package smartparens scheme-complete restart-emacs rainbow-delimiters racket-mode py-yapf monokai-theme markdown-mode magit helm golden-ratio gnu-elpa-keyring-update fzf flycheck flx-ido exec-path-from-shell evil-terminal-cursor-changer evil-nerd-commenter evil-leader company-statistics company-rtags company-c-headers color-theme avy auctex aggressive-indent)))
 (custom-set-faces
