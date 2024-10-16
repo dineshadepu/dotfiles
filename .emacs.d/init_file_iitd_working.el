@@ -99,6 +99,10 @@
 ;; (setq interprogram-paste-function 'copy-from-osx)
 
 ;; https://github.com/belak/emacs-monokai-pro-theme
+(use-package monokai-pro-theme
+  :ensure t
+  :config
+  (load-theme 'monokai-pro t))
 (load-theme 'monokai-pro t)
 
 (eval-when-compile
@@ -184,12 +188,19 @@
   (evil-collection-init))
 
 
+(use-package git-timemachine
+  :ensure t)
+(with-eval-after-load 'git-timemachine
+  (evil-make-overriding-map git-timemachine-mode-map 'normal)
+  ;; force update evil keymaps after git-timemachine-mode loaded
+  (add-hook 'git-timemachine-mode-hook #'evil-normalize-keymaps))
 
 (use-package evil-escape
   :ensure t
   :diminish evil-escape
   :init (evil-escape-mode 1))
 (setq-default evil-escape-key-sequence "jk")
+(setq-default evil-escape-delay 0.2)
 
 
 (use-package evil-leader
@@ -280,18 +291,20 @@
   (add-hook 'LaTeX-mode-hook 'predictive-mode))
 
 
-;; (use-package elpy
-;;   :ensure t
-;;   :diminish elpy-mode
-;;   :config(progn
-;;            ;; (defalias 'workon 'pyvenv-workon)
-;;            ;; (elpy-use-cpython "/usr/local/bin/python3")
-;;            ;; (setq elpy-rpc-python-command "python3")
-;;            ;; (setq 'python-indent-offset 4)
-;;            (setq company-minimum-prefix-length 1)
-;;            ;; (elpy-use-ipython)
-;;            ;; (elpy-clean-modeline)
-;;            (elpy-enable)))
+(use-package elpy
+  :ensure t
+  :diminish elpy-mode
+  :config(progn
+           ;; (defalias 'workon 'pyvenv-workon)
+           ;; (elpy-use-cpython "/usr/local/bin/python3")
+           (setq elpy-rpc-python-command "python3")
+           (setq elpy-rpc-virtualenv-path 'current)
+           ;; (setq 'python-indent-offset 4)
+           (setq company-minimum-prefix-length 1)
+           (add-hook 'elpy-mode-hook (lambda () (highlight-indentation-mode -1)))
+           ;; (elpy-use-ipython)
+           ;; (elpy-clean-modeline)
+           (elpy-enable)))
 
 
 (use-package ido
@@ -356,7 +369,6 @@
 
 (use-package fzf
   :ensure t)
-
 
 (use-package rainbow-delimiters
   :ensure t
@@ -427,7 +439,6 @@
       (kill-buffer buffer))))
 (global-set-key (kbd "C-x L") 'kill-other-buffers)
 
-
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -442,7 +453,7 @@
  '(helm-minibuffer-history-key "M-p")
  '(ispell-dictionary nil)
  '(package-selected-packages
-   '(monokai-alt-theme yasnippet which-key use-package smartparens scheme-complete restart-emacs rainbow-delimiters racket-mode py-yapf monokai-theme markdown-mode magit helm golden-ratio gnu-elpa-keyring-update fzf flycheck flx-ido exec-path-from-shell evil-terminal-cursor-changer evil-nerd-commenter evil-leader company-statistics company-rtags company-c-headers color-theme avy auctex aggressive-indent)))
+   '(cmake-mode git-timemachine helm-swoop helm-rg monokai-alt-theme yasnippet which-key use-package smartparens scheme-complete restart-emacs rainbow-delimiters racket-mode py-yapf monokai-theme markdown-mode magit helm golden-ratio gnu-elpa-keyring-update fzf flycheck flx-ido exec-path-from-shell evil-terminal-cursor-changer evil-nerd-commenter evil-leader company-statistics company-rtags company-c-headers color-theme avy auctex aggressive-indent)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
