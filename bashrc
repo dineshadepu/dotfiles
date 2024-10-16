@@ -132,7 +132,7 @@ export GIT_PS1_SHOWDIRTYSTATE=1
 # '\$(__git_ps1)' adds git-related stuff
 # '\W' adds the name of the current directory
 
-export PS1=" \n \n ----CLWS HPC CLWS HPC CLWS HPC ----------------------------------\n $purple\u@UoSHPCLab$blue\$(__git_ps1)$green \$PWD $ $reset \n| $reset HPC LAB UoS => "
+export PS1="\n\n$green\u@LabDell$purple\$(__git_ps1)$blue \$PWD $ $reset \n| $reset lab desktop => "
 # PATH=/usr/racket/bin:$PATH
 
 bind '"\e[A": history-search-backward'
@@ -170,22 +170,23 @@ export PATH=$HOME/opt:$PATH
 export PATH=$HOME/.cargo/bin:$PATH
 export PATH=/usr/bin:$PATH
 
-export PATH=$HOME/anaconda3/bin:$PATH
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/adepudinesh/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/home/adepudinesh/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/home/adepudinesh/anaconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/home/adepudinesh/anaconda3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
-conda activate pysph_env
+# export PATH=$HOME/anaconda3/bin:$PATH
+# # >>> conda initialize >>>
+# # !! Contents within this block are managed by 'conda init' !!
+# __conda_setup="$('/home/dineshadepu/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+# if [ $? -eq 0 ]; then
+#     eval "$__conda_setup"
+# else
+#     if [ -f "/home/dineshadepu/anaconda3/etc/profile.d/conda.sh" ]; then
+#         . "/home/dineshadepu/anaconda3/etc/profile.d/conda.sh"
+#     else
+#         export PATH="/home/dineshadepu/anaconda3/bin:$PATH"
+#     fi
+# fi
+# unset __conda_setup
+# # <<< conda initialize <<<
+# conda activate pybamm_dev
+# # conda activate moose
 
 # Zoxide for cd
 # eval "$(zoxide init bash --cmd cd)"
@@ -203,38 +204,52 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/x86_64-linux-gnu/dri/
 # for visit visualizer
 export PATH=/usr/local/visit/bin:$PATH
 # for paraview visualizer
-export PATH=/home/adepudinesh/post_doc/softwares/ParaView-5.12.0-MPI-Linux-Python3.10-x86_64/bin:$PATH
+export PATH=/home/dineshadepu/life/softwares/ParaView-5.13.1-MPI-Linux-Python3.10-x86_64/bin:$PATH
 
 
 export PATH=/usr/local/cuda/bin:$PATH
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda-12/lib64/
 
 # for parallel hdf5 for Cabana
-export HDF_INSTALL_DIR=/home/dinesh/post_doc/softwares/hdf5/
+export HDF_INSTALL_DIR=/home/dineshadepu/life/softwares/hdf5
 # for silo particle output
-export SILO_INCLUDE_DIR=/home/adepudinesh/post_doc/softwares/Silo/include/
-export SILO_LIBRARY=/home/adepudinesh/post_doc/softwares/Silo/lib/
-export SILO_INSTALL_DIR=/home/dinesh/post_doc/softwares/Silo
+export SILO_INCLUDE_DIR=/home/dineshadepu/life/softwares/Silo/include/
+export SILO_LIBRARY=/home/dineshadepu/life/softwares/Silo/lib/
+export SILO_INSTALL_DIR=/home/dineshadepu/life/softwares/Silo
 
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/adepudinesh/post_doc/softwares/hdf5/src/.libs
-export PATH=/home/adepudinesh/post_doc/softwares/hdf5/bin:$PATH
-export PATH=/home/adepudinesh/post_doc/softwares/hdf5/src:$PATH
-export PATH=/home/adepudinesh/post_doc/softwares/hdf5:$PATH
-export PATH=/home/adepudinesh/post_doc/softwares/hdf5/src/.libs:$PATH
-export HDF5_ROOT=/home/adepudinesh/post_doc/softwares/hdf5
-export HDF5_SRC=/home/adepudinesh/post_doc/softwares/hdf5/src/
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/dineshadepu/life/softwares/hdf5/src/.libs
+export PATH=/home/dineshadepu/life/softwares/hdf5/bin:$PATH
+export PATH=/home/dineshadepu/life/softwares/hdf5/src:$PATH
+export PATH=/home/dineshadepu/life/softwares/hdf5:$PATH
+export PATH=/home/dineshadepu/life/softwares/hdf5/src/.libs:$PATH
+export HDF5_ROOT=/home/dineshadepu/life/softwares/hdf5
+export HDF5_SRC=/home/dineshadepu/life/softwares/hdf5/src/
+# Arborx nnps
+export ARBORX_SRC_DIR=/home/dineshadepu/life/softwares/ArborX
+export ARBORX_DIR=/home/dineshadepu/life/softwares/ArborX
+export ARBORX_INSTALL_DIR=$ARBORX_SRC_DIR/build/install
+
+# FFT, heffte
+export HEFFTE_SRC_DIR=/home/dineshadepu/life/softwares/heffte
+export HEFFTE_DIR=/home/dineshadepu/life/softwares/heffte
+export HEFFTE_INSTALL_DIR=$HEFFTE_SRC_DIR/build/install
+
 
 # Cabana installation paths
-export KOKKOS_SRC_DIR=/home/adepudinesh/post_doc/softwares/kokkos
-export Kokkos_DIR=/home/adepudinesh/post_doc/softwares/kokkos/build
+export KOKKOS_SRC_DIR=/home/dineshadepu/life/softwares/kokkos
+export Kokkos_DIR=/home/dineshadepu/life/softwares/kokkos/build
 export KOKKOS_INSTALL_DIR=$KOKKOS_SRC_DIR/build/install
-export CABANA_INSTALL_DIR=/home/adepudinesh/post_doc/softwares/Cabana/build/install
+export CABANA_INSTALL_DIR=/home/dineshadepu/life/softwares/Cabana/build/install
 
 
 # Cabana installation paths for CPU
 export KOKKOS_INSTALL_DIR_CPU=$KOKKOS_SRC_DIR/cpu_build/install
-export CABANA_INSTALL_DIR_CPU=/home/adepudinesh/post_doc/softwares/Cabana/cpu_build/install
+export CABANA_INSTALL_DIR_CPU=/home/dineshadepu/life/softwares/Cabana/cpu_build/install
 
 
 
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/adepudinesh/.local/netcdf/lib/
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/dineshadepu/.local/netcdf/lib/
+
+
+# Obsidian
+alias Obsidian="~/Downloads/Obsidian-1.6.7.AppImage"
