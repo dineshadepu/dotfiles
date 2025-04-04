@@ -170,35 +170,38 @@ export PATH=$HOME/opt:$PATH
 export PATH=$HOME/.cargo/bin:$PATH
 export PATH=/usr/bin:$PATH
 
-# export PATH=$HOME/anaconda3/bin:$PATH
-# # >>> conda initialize >>>
-# # !! Contents within this block are managed by 'conda init' !!
-# __conda_setup="$('/home/dineshadepu/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
-# if [ $? -eq 0 ]; then
-#     eval "$__conda_setup"
-# else
-#     if [ -f "/home/dineshadepu/anaconda3/etc/profile.d/conda.sh" ]; then
-#         . "/home/dineshadepu/anaconda3/etc/profile.d/conda.sh"
-#     else
-#         export PATH="/home/dineshadepu/anaconda3/bin:$PATH"
-#     fi
-# fi
-# unset __conda_setup
-# # <<< conda initialize <<<
-# conda activate pybamm_dev
-# # conda activate moose
+export PATH=$HOME/anaconda3/bin:$PATH
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/dineshadepu/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/dineshadepu/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/home/dineshadepu/anaconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/dineshadepu/anaconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+conda activate pybamm_dev
+# conda activate moose
 
 # Zoxide for cd
 # eval "$(zoxide init bash --cmd cd)"
 
+
+# for peacock
+export PATH=$HOME/life/softwares/moose_projects/moose/python/peacock:$PATH
 
 # for emacs rtags
 # export PATH=/post_doc/softwares/rtags/build/bin:$PATH
 
 # for mesa pysph viewer problem libGL error
 # export MESA_LOADER_DRIVER_OVERRIDE=i965
-export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/x86_64-linux-gnu/dri/
+# export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6
+# export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/x86_64-linux-gnu/dri/
 
 
 # for visit visualizer
@@ -248,8 +251,27 @@ export CABANA_INSTALL_DIR_CPU=/home/dineshadepu/life/softwares/Cabana/cpu_build/
 
 
 
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/dineshadepu/.local/netcdf/lib/
+# export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/dineshadepu/.local/netcdf/lib/
 
 
 # Obsidian
 alias Obsidian="~/Downloads/Obsidian-1.6.7.AppImage"
+
+
+# For dolfin fenicsx to work
+# export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/dineshadepu/anaconda3/envs/fenics-env/lib/
+
+# >>> juliaup initialize >>>
+
+# !! Contents within this block are managed by juliaup !!
+
+case ":$PATH:" in
+    *:/home/dineshadepu/.juliaup/bin:*)
+        ;;
+
+    *)
+        export PATH=/home/dineshadepu/.juliaup/bin${PATH:+:${PATH}}
+        ;;
+esac
+
+# <<< juliaup initialize <<<
