@@ -167,11 +167,11 @@
               (evil-leader/set-key "0" 'delete-window)
               (evil-leader/set-key "3" 'split-window-right)
               (evil-leader/set-key "2" 'split-window-below)
-              (evil-leader/set-key "." 'xref-find-definitions)
+              (evil-leader/set-key "." 'xref-find-definitions-other-window)
               (evil-leader/set-key "," 'xref-go-back)
               (evil-leader/set-key "/" 'xref-find-references)
+              (evil-leader/set-key "a" 'eglot-code-actions)
               (evil-leader/set-key "i" 'org-ref-insert-ref-link)
-              (evil-leader/set-key "l" 'org-ref-helm-insert-label-link)
               (evil-leader/set-key "w" 'ispell-word)
               (evil-leader/set-key "g" 'magit-status)
               (evil-leader/set-key "n" 'windmove-left)
@@ -299,26 +299,48 @@
 ;; ;;        :branch "master")
 ;; ;;   :after helm
 ;; ;;   :bind (("M-i" . helm-swoop)))
-(add-to-list 'load-path "~/.emacs.d/local_git_repos/helm-swoop")
-(require 'helm-swoop)
-(global-set-key (kbd "M-i") 'helm-swoop)
+
+;; (add-to-list 'load-path "~/.emacs.d/local_git_repos/helm-swoop")
+;; (require 'helm-swoop)
+;; (global-set-key (kbd "M-i") 'helm-swoop)
+
+(use-package helm-swoop
+  :load-path "~/.emacs.d/local_git_repos/helm-swoop"
+  :after helm
+  :bind (("M-i" . helm-swoop)))
 ;; =========================
 ;; Helm swoop is not working
 ;; =========================
 
 
-(use-package golden-ratio                 ; Auto resize windows
-  :ensure t
-  :diminish golden-ratio-mode
-  :config
-  (golden-ratio-mode 1)
-  (setq golden-ratio-auto-scale t)
-  (setq golden-ratio-extra-commands
-        (append golden-ratio-extra-commands
-                '(evil-window-left
-                  evil-window-right
-                  evil-window-up
-                  evil-window-down))))
+;; (use-package golden-ratio
+;;   :ensure t
+;;   :diminish golden-ratio-mode
+;;   :config
+;;   (golden-ratio-mode 1)
+;;   (setq golden-ratio-auto-scale t)
+
+;;   (setq golden-ratio-exclude-modes
+;;         '(minibuffer-mode
+;;           help-mode
+;;           compilation-mode
+;;           eglot-events-mode))
+
+;;   (setq golden-ratio-extra-commands
+;;         (append golden-ratio-extra-commands
+;;                 '(evil-window-left
+;;                   evil-window-right
+;;                   evil-window-up
+;;                   evil-window-down
+;;                   other-window))))
+
+;; (defun my-golden-ratio-on-window-select (_window)
+;;   (when golden-ratio-mode
+;;     (golden-ratio)))
+
+;; (add-hook 'window-selection-change-functions
+;;           #'my-golden-ratio-on-window-select)
+
 
 
 
@@ -342,13 +364,6 @@
 
 (use-package fzf
   :ensure t)
-
-(use-package rainbow-delimiters
-  :ensure t
-  :init
-  (progn
-    (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
-    (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)))
 
 ;; kill all oher buffers
 (defun nuke-all-buffers ()
@@ -463,6 +478,13 @@
   (add-to-list 'completion-at-point-functions #'cape-dabbrev))
 
 
+(use-package orderless
+  :ensure t
+  :init
+  ;; Make orderless available as a completion style
+  (setq completion-styles '(orderless basic))
+  (setq completion-category-defaults nil))
+
 (setq completion-category-overrides
       '((eglot (styles orderless basic))))
 
@@ -490,7 +512,8 @@
 ;; ======================
 ;; C / C++ + LSP (Eglot)
 ;; ======================
-
+;; Use the following command to generate compile commands
+;; cmake -S . -B build   -DCMAKE_BUILD_TYPE=RelWithDebInfo   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 (use-package eglot
   :ensure t
   :hook ((c-mode c++-mode) . eglot-ensure))
@@ -567,6 +590,45 @@
 ;; =========================
 
 
+;; =========================
+;; Adjust the font
+;; =========================
+(defun my-auto-set-font ()
+  "Automatically set font size based on screen resolution."
+  (let* ((width (display-pixel-width))
+         (height (display-pixel-height))
+         (size (cond
+                ((>= width 5120) 190)   ;; 5K display
+                ((>= width 3840) 180)   ;; 4K display
+                ((>= width 2560) 160)   ;; QHD / large external
+                (t 140))))              ;; laptop
+    (set-face-attribute 'default nil :height size)))
+
+(add-hook 'window-setup-hook #'my-auto-set-font)
+;; =========================
+;; Adjust the font ends
+;; =========================
+
+
+;; ===================================================
+;; kind-icon (icons in Corfu — subtle but helpful)
+;; ===================================================
+(use-package kind-icon
+  :ensure t
+  :after corfu
+  :custom
+  (kind-icon-default-face 'corfu-default)
+  :config
+  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+;; ======================================================
+;; kind-icon (icons in Corfu — subtle but helpful) ends
+;; ======================================================
+
+
+(use-package expand-region
+  :ensure t
+  :bind
+  ("C-=" . er/expand-region))
 
 
 (custom-set-variables
@@ -576,7 +638,7 @@
  ;; If there is more than one, they won't work right.
  '(helm-minibuffer-history-key "M-p")
  '(package-selected-packages
-   '(helm-rg modus-themes helm-swoop helm-projectile projectile which-key smartparens restart-emacs rainbow-delimiters magit helm golden-ratio git-timemachine fzf flx-ido exec-path-from-shell evil-terminal-cursor-changer evil-nerd-commenter evil-leader evil-escape evil-collection avy)))
+   '(expand-region helm-rg modus-themes helm-swoop helm-projectile projectile which-key smartparens restart-emacs rainbow-delimiters magit helm git-timemachine fzf flx-ido exec-path-from-shell evil-terminal-cursor-changer evil-nerd-commenter evil-leader evil-escape evil-collection avy)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
