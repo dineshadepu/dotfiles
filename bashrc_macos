@@ -1,0 +1,174 @@
+# don't put duplicate lines or lines starting with space in the history.
+# See bash(1) for more options
+HISTCONTROL=ignoreboth
+
+# append to the history file, don't overwrite it
+shopt -s histappend
+
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=1000
+HISTFILESIZE=2000
+
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
+
+
+# colored GCC warnings and errors
+#export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+
+# some more ls aliases
+alias ls='exa'
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+
+
+# My configuration starts
+source ~/git-completion.bash
+# export PATH="$HOME/miniconda3/bin:$PATH"
+# colors!
+green="\[\033[0;32m\]"
+blue="\[\033[0;34m\]"
+purple="\[\033[0;35m\]"
+reset="\[\033[0m\]"
+
+# Change command prompt
+source ~/git-prompt.sh
+export GIT_PS1_SHOWDIRTYSTATE=1
+# '\u' adds the name of the current user to the prompt
+# '\$(__git_ps1)' adds git-related stuff
+# '\W' adds the name of the current directory
+
+export PS1=" \n \n ----MacOS ----------------------------------\n $purple\u@MacOS$blue\$(__git_ps1)$green \$PWD $ $reset \n| $reset Mac OS => "
+# PATH=/usr/racket/bin:$PATH
+
+bind '"\e[A": history-search-backward'
+bind '"\e[B": history-search-forward'
+
+# sync bash history across terminals
+export HISTCONTROL=ignoredups:erasedups  # no duplicate entries
+export HISTSIZE=100000                   # big big history
+export HISTFILESIZE=100000               # big big history
+shopt -s histappend                      # append to history, don't overwrite it
+
+# Save and reload the history after each command finishes
+export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+
+# fuzzy completion
+
+alias ..="cd .."
+alias ...="cd ../../"
+alias l='ls -l'
+alias la='ls -a'
+alias sl="ls"
+alias s="ls"
+alias v="pysph view"
+alias rmp="rm -rf"
+alias batp="bat -l=py"
+
+# Paths
+
+export PATH=$HOME/.cargo/bin:$PATH
+
+
+# Zoxide for cd
+# eval "$(zoxide init bash --cmd cd)"
+
+
+# for emacs rtags
+# export PATH=/post_doc/softwares/rtags/build/bin:$PATH
+
+# for paraview visualizer
+export PATH=/Applications/ParaView-5.13.0.app/Contents/MacOS:$PATH
+export PATH=/Applications/ParaView-5.13.0.app/Contents/bin:$PATH
+
+
+# for parallel hdf5 for Cabana
+export HDF_INSTALL_DIR=/Users/dineshadepu/life/softwares/hdf5/
+# for silo particle output
+export SILO_INCLUDE_DIR=/Users/dineshadepu/life/softwares/Silo/include/
+export SILO_LIBRARY=/Users/dineshadepu/life/softwares/Silo/lib/
+export SILO_INSTALL_DIR=/Users/dineshadepu/life/softwares/Silo
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/Users/dineshadepu/life/softwares/hdf5/src/.libs
+export PATH=/Users/dineshadepu/life/softwares/hdf5/bin:$PATH
+export PATH=/Users/dineshadepu/life/softwares/hdf5/src:$PATH
+export PATH=/Users/dineshadepu/life/softwares/hdf5:$PATH
+export PATH=/Users/dineshadepu/life/softwares/hdf5/src/.libs:$PATH
+export HDF5_ROOT=/Users/dineshadepu/life/softwares/hdf5
+export HDF5_SRC=/Users/dineshadepu/life/softwares/hdf5/src/
+# Arborx nnps
+export ARBORX_SRC_DIR=/Users/dineshadepu/life/softwares/ArborX
+export ARBORX_DIR=/Users/dineshadepu/life/softwares/ArborX
+export ARBORX_INSTALL_DIR=$ARBORX_SRC_DIR/build/install
+
+# # FFT, heffte
+# export HEFFTE_SRC_DIR=/Users/dineshadepu/life/softwares/heffte
+# export HEFFTE_DIR=/Users/dineshadepu/life/softwares/heffte
+# export HEFFTE_INSTALL_DIR=$HEFFTE_SRC_DIR/build/install
+
+
+# Cabana installation paths
+export KOKKOS_SRC_DIR=/Users/dineshadepu/life/softwares/kokkos
+export Kokkos_DIR=/Users/dineshadepu/life/softwares/kokkos/build
+export KOKKOS_INSTALL_DIR=$KOKKOS_SRC_DIR/build/install
+export CABANA_INSTALL_DIR=/Users/dineshadepu/life/softwares/Cabana/build/install
+
+
+# export LDFLAGS="-L/opt/homebrew/opt/libomp/lib"
+# export CPPFLAGS="-I/opt/homebrew/opt/libomp/include"
+
+
+# To use the bundled libunwind please use the following LDFLAGS:
+# LDFLAGS="-L/opt/homebrew/opt/llvm/lib/unwind -lunwind"
+
+# # To use the bundled libc++ please use the following LDFLAGS:
+# # LDFLAGS="-L/opt/homebrew/opt/llvm/lib/c++ -L/opt/homebrew/opt/llvm/lib/unwind -lunwind"
+
+
+# export PATH=/opt/anaconda3/bin:$PATH
+# # >>> conda initialize >>>
+# # !! Contents within this block are managed by 'conda init' !!
+# __conda_setup="$('/opt/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+# if [ $? -eq 0 ]; then
+#     eval "$__conda_setup"
+# else
+#     if [ -f "/opt/anaconda3/etc/profile.d/conda.sh" ]; then
+#         . "/opt/anaconda3/etc/profile.d/conda.sh"
+#     else
+#         export PATH="/opt/anaconda3/bin:$PATH"
+#     fi
+# fi
+# unset __conda_setup
+# # <<< conda initialize <<<
+# # conda activate venv_1
+# # conda activate pysph
+
+
+
+# export CC=/opt/homebrew/bin/gcc-14
+# export CXX=/opt/homebrew/bin/g++-14
+# export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+
+# For llvm clang
+export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+export OpenMP_ROOT=$(brew --prefix)/opt/libomp
+
+export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
+export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
+
+# export LDFLAGS="-L/opt/homebrew/opt/libomp/lib"
+# export CPPFLAGS="-I/opt/homebrew/opt/libomp/include"
+
+# Julia path
+export PATH="/Applications/Julia-1.11.app/Contents/Resources/julia/bin:$PATH"
+
+# DaVinci Resolve
+DIR="/Library/Application Support/Blackmagic Design/DaVinci Resolve/Developer/Scripting/Modules"
+export PYTHONPATH="$DIR:$PYTHONPATH"
+
+# # Spack
+# export SPACK_ROOT=$HOME/life/softwares/spack
+# source $SPACK_ROOT/share/spack/setup-env.sh
+# export SPACK_PYTHON=/opt/anaconda3/bin/python
